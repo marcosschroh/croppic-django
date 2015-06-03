@@ -105,34 +105,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#Local Settings Import
-# try:
-#     import socket
-#     hostname = socket.gethostname().replace('.', '_').replace('-', '_')
+# Local Settings Import
+try:
+    import socket
+    hostname = socket.gethostname().replace('.', '_').replace('-', '_')
 
-#     # Hostname could start with a number, take that in consideration
-#     if hostname[0].isdigit():
-#         local_settings = os.getenv('FYT_LOCAL_SETTINGS')
+    # Hostname could start with a number, take that in consideration
+    hstr = "import %s as local_settings" % hostname
+    exec(hstr)
 
-#         if local_settings is None:
-#             raise ImportError
+    print "Import %s local_settings" % hostname
 
-#         if not local_settings.endswith('.py'):
-#             raise Exception('local_settings file must be a python file')
-
-#         path, py_file = os.path.split(local_settings)
-#         sys.path.insert(0, path)
-#         local_settings = importlib.import_module(py_file.split('.py')[0])
-#     else:
-#         hstr = "".join((
-#             "import croppic_django_implemetation.croppic_django_implemetation.local_settings.{0} as local_settings".format(
-#                 hostname
-#             )
-#         ))
-#         print hstr
-#         exec(hstr)
-#         print "import local_settings.%s as local_settings" % hostname
-#         HOSTNAME = hostname
-
-# except ImportError:
-#     print "No local settings file to import"
+except ImportError:
+    print "No local settings file to import"
