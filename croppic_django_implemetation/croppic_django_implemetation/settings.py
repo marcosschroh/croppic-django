@@ -40,7 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'customers',
+    'customers',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -59,7 +59,7 @@ ROOT_URLCONF = 'croppic_django_implemetation.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -111,7 +111,7 @@ try:
     hostname = socket.gethostname().replace('.', '_').replace('-', '_')
 
     # Hostname could start with a number, take that in consideration
-    hstr = "import %s as local_settings" % hostname
+    hstr = "from %s import *" % hostname
     exec(hstr)
 
     print "Import %s local_settings" % hostname
