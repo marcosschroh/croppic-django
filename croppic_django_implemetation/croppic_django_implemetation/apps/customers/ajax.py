@@ -50,7 +50,7 @@ def upload_profile_image(request):
                 "width": width,
                 "height": height
             }
-
+            
             return HttpResponse(json.dumps(response), content_type="application/json")
 
         response = {
@@ -60,7 +60,7 @@ def upload_profile_image(request):
 
         return HttpResponse(json.dumps(response), content_type="application/json")
 
-    return render(request, "registration/upload_profile_picture.html", ctx)
+    return render(request, "customers/upload_image.html", ctx)
 
 
 def crop_profile_image(request):
