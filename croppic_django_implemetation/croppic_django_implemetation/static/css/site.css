@@ -14,3 +14,32 @@ body {
   	-webkit-box-shadow: inset 0 0 100px rgba(0,0,0,.5);
   	box-shadow: inset 0 0 100px rgba(0,0,0,.5);
 }
+
+#cropContainerHeader{
+  width: 320px;
+  height: 320px;
+  position: relative;
+  border: 1px solid #ccc;
+  margin-bottom: 30px;
+  margin-top: 20px;
+}
+
+#profile-image{
+    width: 320px;
+    height: 320px;
+    position: relative;
+}
+
+#div_id_where_do_you_train input[type="checkbox"] {
+    position: static;
+    margin-right: 6px;
+    margin-left: 0;
+}
+
+.trainer-signup-form label.radio{
+    font-weight: normal;
+}
+
+#croppic-container{
+    margin-bottom: 20px;
+}

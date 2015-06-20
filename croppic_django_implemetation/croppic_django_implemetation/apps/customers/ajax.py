@@ -2,56 +2,62 @@ import json
 import random
 
 from django.http import HttpResponse
-from django.contrib.sites.models import get_current_site
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.models import User
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
 from PIL import Image
 
-from customers.models import Customer
-from customers.forms import CropProfilePictureForm
+from .models import Customer
+from .forms import CustomerForm, CropProfilePictureForm
 
 
-@login_required
 def upload_profile_image(request):
 
-    fytuser = request.user
     current_site = get_current_site(request)
     domain = current_site.domain
-
+    user = User.objects.get()
     ctx = {}
 
     try:
-        instance = Customer.objects.get(fytuser=fytuser)
-        ctx = {
-            "preload_image_url": "http://%s/%s" % (domain, instance.img.url),
-        }
+        customer = Customer.objects.all().first()
+        print "hola chiche"
+        print domain
+        if customer.img:
+            ctx = {
+                "preload_image_url": "http://%s/%s" % (domain, customer.img.url),
+            }
+    except Customer.DoesNotExist:
+        customer = Customer.objects.create(user=user)
 
-    except FytUserImage.DoesNotExist:
-        instance = None
-        logger.info("FytUserImage Does Not Exist.")
+    print "entrandooooo"
 
     if request.is_ajax():
 
-        form = FytUserImageForm(request.POST or None, request.FILES or None, instance=instance)
+        print "entrando al ajaxx"
+
+        form = CustomerForm(request.POST or None, request.FILES or None)
 
         if form.is_valid():
 
-            new_image_fytuser = form.save(commit=False)
+            print "formulario validoo"
+            customer = form.save(commit=False)
 
-            new_image_fytuser.fytuser = fytuser
-            new_image_fytuser.is_profile_image = True
-            new_image_fytuser.save()
+            customer.user = user
+            customer.save()
 
-            img = Image.open(new_image_fytuser.img)
-            width, height = img.size
+            image = Image.open(customer.img)
+            width, height = image.size
 
             response = {
                 "status": "success",
-                "url": "http://%s/%s" % (domain, new_image_fytuser.img.url),
+                "url": "http://%s/%s" % (domain, customer.img.url),
                 "width": width,
                 "height": height
             }
-            
-            return HttpResponse(json.dumps(response), content_type="application/json")
+
+            return HttpResponse(json.dumps(response))
 
         response = {
                 "status": "error",

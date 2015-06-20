@@ -1,4 +1,7 @@
+import os
 import datetime
+
+from django.utils.text import slugify
 
 
 def get_upload_path(instance, filename):

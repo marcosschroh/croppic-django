@@ -1,6 +1,64 @@
 {% extends "base.html" %}
+{% load static %}
 
-
+{% block title %}Upload an Image{% endblock %}
 {% block content %}
+<div class="container">
+    <div class="container-register-booking">
+        <div class="book-container">
+            <h1>Upload Your Profile Image</h1>
+            <p>Please upload a front-facing photo and crop and zoom it into a head shot.</p>
+
+            <div class="row">
+                <div class="col-md-4" id="croppic-container">
+                    <div id="cropContainerHeader">
+                        <div id="profile-image"></div>
+                    </div>
+                    {% comment %}
+                    <a href="{% url 'register_thank_you' %}" id="trainer-signup-thank-you"
+                     class="btn btn-primary">Confirm</a>
+                    {% endcomment %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
+{% block extra_styles %}
+<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}js/lib/croppic-master/assets/css/croppic.css"/>
+{% endblock %}
+
+{% block extra_bottom_scripts %}
+<script type="text/javascript" src="{% get_static_prefix %}js/lib/croppic-master/croppic.js"></script>
+{% endblock extra_bottom_scripts %}
+
+
+{% block init_scripts %}
+<script type="text/javascript">
+$(document).ready(function(){
+
+    var cropperHeaderOptions = {
+        uploadUrl: "{% url 'upload_profile_image' %}",
+        cropUrl: "{% url 'crop_profile_image' %}",
+        loadPicture: "{{preload_image_url}}",
+        customCropButtonId: "trainer-signup-thank-you",
+        //processInline: true,
+        //modal:false,
+        imgEyecandy: false,
+        //mgEyecandyOpacity:0.2,
+        enableMousescroll: true,
+        loaderHtml:'<div class="loader bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div> ',
+        onError: function(errormsg){ console.log('onError:'+errormsg) },
+        onAfterImgUpload: function(){ console.log("hola chiche, EXITOOO") },
+        onAfterImgCrop: function(){
+            $("div.loader").hide();
+            $("#trainer-signup-thank-you").show();
+        }
+    }
+
+    var cropperHeader = new Croppic("profile-image", cropperHeaderOptions);
+
+});
+</script>
+{% endblock init_scripts %}
