@@ -1,3 +1,5 @@
+import logging
+
 import json
 import random
 
@@ -5,12 +7,14 @@ from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 
 from PIL import Image
 
 from .models import Customer
-from .forms import CustomerForm, CropProfilePictureForm
+from .forms import ImageForm, CropProfilePictureForm
+
+
+logger = logging.getLogger(__name__)
 
 
 def upload_profile_image(request):
@@ -22,8 +26,7 @@ def upload_profile_image(request):
 
     try:
         customer = Customer.objects.all().first()
-        print "hola chiche"
-        print domain
+
         if customer.img:
             ctx = {
                 "preload_image_url": "http://%s/%s" % (domain, customer.img.url),
@@ -31,20 +34,15 @@ def upload_profile_image(request):
     except Customer.DoesNotExist:
         customer = Customer.objects.create(user=user)
 
-    print "entrandooooo"
-
     if request.is_ajax():
 
-        print "entrando al ajaxx"
-
-        form = CustomerForm(request.POST or None, request.FILES or None)
+        form = ImageForm(request.POST or None, request.FILES or None)
 
         if form.is_valid():
 
-            print "formulario validoo"
-            customer = form.save(commit=False)
+            image = form.cleaned_data["img"]
 
-            customer.user = user
+            customer.img = image
             customer.save()
 
             image = Image.open(customer.img)
@@ -77,13 +75,9 @@ def crop_profile_image(request):
             "status": "error",
         }
 
-        try:
-            fytuser = request.user
-            fyt_user_image = FytUserImage.objects.get(fytuser=fytuser)
+        customer = Customer.objects.all().first()
 
-        except FytUserImage.DoesNotExist:
-            logger.warning("FytUserImage Does Not Exist..")
-            response["message"] = "FytUserImage Does Not Exist.."
+        if not customer:
             return HttpResponse(json.dumps(response), content_type="application/json")
 
         form = CropProfilePictureForm(request.POST or None)
@@ -122,7 +116,7 @@ def crop_profile_image(request):
             size = (int(imgW), int(imgH))
 
             try:
-                im = Image.open(fyt_user_image.img)
+                im = Image.open(customer.img)
                 im = im.resize(size)
                 im = im.rotate(rotation)
 
@@ -130,9 +124,9 @@ def crop_profile_image(request):
 
                 im = im.crop(box)
 
-                im.save(fyt_user_image.img.file.name)
+                im.save(customer.img.file.name)
             except IOError as e:
-                logger.warning("cannot create thumbnail for", fyt_user_image.img)
+                logger.warning("cannot create thumbnail for", customer.img)
                 logger.exception(e)
                 response["message"] = "cannot create thumbnail for"
                 return HttpResponse(json.dumps(response), content_type="application/json")
@@ -143,7 +137,7 @@ def crop_profile_image(request):
 
             response = {
                 "status": "success",
-                "url": "http://%s/%s?a=%s" % (domain, fyt_user_image.img.url, r),
+                "url": "http://%s/%s?a=%s" % (domain, customer.img.url, r),
             }
 
             return HttpResponse(json.dumps(response), content_type="application/json")

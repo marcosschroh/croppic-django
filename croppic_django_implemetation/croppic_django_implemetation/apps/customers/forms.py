@@ -1,14 +1,8 @@
 from django import forms
 
-from .models import Customer
 
-
-class CustomerForm(forms.ModelForm):
-
-    class Meta:
-        model = Customer
-
-        exclude = ('user',)
+class ImageForm(forms.Form):
+    img = forms.ImageField()
 
 
 class CropProfilePictureForm(forms.Form):

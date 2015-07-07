@@ -33,18 +33,7 @@ if settings.DEBUG:
         (r'^static/(?P<path>.*)$',
          'django.views.static.serve',
          {'document_root': settings.STATIC_ROOT, 'show_indexes': True, }),
-
-        # (r'^(?P<path>.*)$', 'django.views.static.serve', {
-        #     'document_root': settings.STATIC_ROOT,
-        #     'show_indexes': True,
-        # })
-    ])
-
-if settings.DEBUG:
-    urlpatterns += patterns('', *[
-
         (r'^media/(?P<path>.*)$',
          'django.views.static.serve',
          {'document_root': settings.MEDIA_ROOT, 'show_indexes': True, }),
-
     ])
