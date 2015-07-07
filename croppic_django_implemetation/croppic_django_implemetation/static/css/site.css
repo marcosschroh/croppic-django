@@ -6,6 +6,12 @@ body {
   	background-color: #333;
 }
 
+a.title {
+  font-size: 70px;
+  text-decoration: none;
+  color: white;
+}
+
 .site-wrapper {
 	display: table;
   	width: 100%;
