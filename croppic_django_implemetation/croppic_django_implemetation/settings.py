@@ -115,14 +115,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Local Settings Import
 try:
-    import socket
-    hostname = socket.gethostname().replace('.', '_').replace('-', '_')
-
-    # Hostname could start with a number, take that in consideration
-    hstr = "from %s import *" % hostname
-    exec(hstr)
-
-    print "Import %s local_settings" % hostname
-
+    from local_settings.croppic_example import *
 except ImportError:
     print "No local settings file to import"

@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='Customer',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('img', models.ImageField(upload_to=utils.utils.get_upload_path, null=True, verbose_name=b'Image', blank=True)),
+                ('img', models.ImageField(upload_to=utils.utils.get_upload_path, verbose_name=b'Image')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),

@@ -25,7 +25,7 @@ def upload_profile_image(request):
     ctx = {}
 
     try:
-        customer = Customer.objects.all().first()
+        customer = Customer.objects.get()
 
         if customer.img:
             ctx = {
